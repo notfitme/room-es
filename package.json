@@ -1,0 +1,17 @@
+{
+  "name": "room-es",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx five-server",
+    "lint": "eslint --fix --ext .js,.jsx *"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.36.0",
+    "five-server": "^0.1.9"
+  }
+}
