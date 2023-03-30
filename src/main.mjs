@@ -25,7 +25,7 @@ const optionElements = sceneSystems.map(({ id }) =>
   )
 );
 
-const Select = ({ value, onChange }) =>
+const Select = ({ value = '', onChange }) =>
   createElement(
     "select",
     {
@@ -37,6 +37,13 @@ const Select = ({ value, onChange }) =>
           )
         ),
     },
+    createElement(
+      "option",
+      {
+        value: '',
+      },
+      '请选择'
+    ),
     optionElements
   );
 
