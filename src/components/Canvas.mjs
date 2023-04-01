@@ -22,7 +22,7 @@ const CanvasON = ({ showCreator }) => {
 
 	useEffect(() => {
 		if (renderer && ref.current) {
-			renderer.setShow(showCreator({ container: ref.current }))
+			renderer.setShowCreator(showCreator)
 			renderer.startRender()
 		}
 	})

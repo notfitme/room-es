@@ -19,6 +19,7 @@ export const createRenderer = ({ container } = {}) => {
 
 	const state = {
 		scene: null,
+		container,
 		camera: null,
 		update: () => {},
 		running: true
@@ -43,7 +44,8 @@ export const createRenderer = ({ container } = {}) => {
 		}
 	}
 
-	const setShow = ({ scene, camera, update = () => {} }) => {
+	const setShowCreator = (showCreator) => {
+		const { scene, camera, update = () => {} } = showCreator({container: state.container})
 		state.scene = scene
 		state.camera = camera
 		state.update = update
@@ -61,7 +63,7 @@ export const createRenderer = ({ container } = {}) => {
 	return {
 		stopRender,
 		startRender,
-		setShow
+		setShowCreator
 	}
 }
 
