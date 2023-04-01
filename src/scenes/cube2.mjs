@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import cubeCreator from '../objs/cube.mjs'
 import lightCreator from '../objs/light.mjs'
 
-export default () => {
+const cube2Show = ({container}) => {
 	const cube = cubeCreator()
 	const light = lightCreator()
 
@@ -16,7 +16,7 @@ export default () => {
 	// 摄像头
 	const camera = new THREE.PerspectiveCamera(
 		50,
-		container.clientWidth / container.clientHeight,
+		container?.clientWidth / container?.clientHeight,
 		1,
 		50
 	)
@@ -33,3 +33,5 @@ export default () => {
 		update
 	}
 }
+
+export default cube2Show

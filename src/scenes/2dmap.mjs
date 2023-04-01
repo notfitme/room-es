@@ -68,10 +68,13 @@ function hsl(h, s, l) {
 	return `hsl(${(h * 360) | 0},${(s * 100) | 0}%,${(l * 100) | 0}%)`
 }
 
-export default () => {
-	const scene = loadFile(
+const map2D = () => {
+	loadFile(
 		'./lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014mt_2010_cntm_1_deg.asc'
 	)
 		.then(parseData)
 		.then(drawData)
 }
+
+
+export default map2D

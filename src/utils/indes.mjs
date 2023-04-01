@@ -64,3 +64,5 @@ export const createRenderer = ({ container } = {}) => {
 		setShow
 	}
 }
+
+export const isBasicType = (obj) => !(typeof obj === 'object' || typeof obj === 'function')

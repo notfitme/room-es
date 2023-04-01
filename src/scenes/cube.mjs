@@ -3,7 +3,7 @@ import lineCreator from '../objs/line.mjs'
 import cubeCreator from '../objs/cube.mjs'
 import lightCreator from '../objs/light.mjs'
 
-export default () => {
+const cubeShow = ({ container }) => {
 	const line = lineCreator()
 	const cube = cubeCreator()
 	const light = lightCreator()
@@ -19,7 +19,7 @@ export default () => {
 	// 摄像头
 	const camera = new THREE.PerspectiveCamera(
 		45,
-		container.clientWidth / container.clientHeight,
+		container?.clientWidth / container?.clientHeight,
 		1,
 		500
 	)
@@ -36,3 +36,6 @@ export default () => {
 		update
 	}
 }
+
+
+export default cubeShow

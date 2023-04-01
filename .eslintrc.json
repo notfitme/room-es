@@ -1,18 +1,21 @@
 {
-	"extends": ["prettier"], // 表示 eslint-plugin-prettier，需要放到最后以覆盖别的规则
-	"plugins": ["prettier"], // 表示 eslint-config-prettier
-	"rules": {
-		"prettier/prettier": "error"
-	},
-	"env": {
-		"browser": true,
-		"node": false,
-		"es6": true,
-		"commonjs": false,
-		"mocha": false
-	},
-	"parserOptions": {
-		"ecmaVersion": "latest",
-		"sourceType": "module"
-	}
+  "extends": ["eslint:recommended", "react-app"],
+  "plugins": ["react-hooks"],
+  "rules": {
+    "quotes": [1, "single"],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  },
+  "env": {
+    "browser": true,
+    "node": false,
+    "es6": true,
+    "commonjs": false,
+    "mocha": false
+  },
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "ecmaVersion": "latest",
+    "sourceType": "module"
+  }
 }
