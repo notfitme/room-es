@@ -1,40 +1,58 @@
 <!DOCTYPE html>
 <html>
-  <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <title>My first three.js app</title>
-  <style>
-    body { margin: 0; }
-    html, body {
-      margin: 0;
-      height: 100%;
-    }
-    #container {
-      height: 100%;
-      overflow-y: hidden
-    }
-    #container canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-  </style>
-  <script defer crossorigin src="https://unpkg.com/react@16/umd/react.development.js"></script>
-  <script defer crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
-  <script defer crossorigin src="https://unpkg.com/es-module-shims@latest/dist/es-module-shims.js"></script>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@latest/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@latest/examples/jsm/",
-        "react": "./lib/react.mjs"
-      }
-    }
-  </script>
-  <script defer type="module" src="index.mjs"></script>
-  </head>
-  <body>
-    <div id="container"></div>
-  </body>
+	<head>
+		<meta charset="utf-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+		/>
+		<title>My first three.js app</title>
+		<style>
+			body {
+				margin: 0;
+			}
+			html,
+			body {
+				margin: 0;
+				height: 100%;
+			}
+			#container {
+				height: 100%;
+				overflow-y: hidden;
+			}
+			#container canvas {
+				width: 100%;
+				height: 100%;
+				display: block;
+			}
+		</style>
+		<script
+			defer
+			crossorigin
+			src="https://unpkg.com/react@16/umd/react.development.js"
+		></script>
+		<script
+			defer
+			crossorigin
+			src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+		></script>
+		<script
+			defer
+			crossorigin
+			src="https://unpkg.com/es-module-shims@latest/dist/es-module-shims.js"
+		></script>
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://unpkg.com/three@latest/build/three.module.js",
+					"three/addons/": "https://unpkg.com/three@latest/examples/jsm/",
+					"react": "./lib/react.mjs"
+				}
+			}
+		</script>
+		<script defer type="module" src="index.mjs"></script>
+	</head>
+	<body>
+		<div id="container"></div>
+	</body>
 </html>
