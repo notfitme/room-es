@@ -86,7 +86,6 @@ export const create2dRenderer = ({ container } = {}) => {
 
 	const canvas = document.createElement('canvas')
 	container.appendChild(canvas)
-	const ctx = canvas.getContext('2d')
 
 	const state = {
 		draw: () => {},
@@ -102,7 +101,7 @@ export const create2dRenderer = ({ container } = {}) => {
 		resizeRendererToDisplaySize2d(canvas)
 
 		state.update(timestamp)
-		state.draw(ctx)
+		state.draw()
 
 		if (state.running) {
 			requestAnimationFrame(animate)
