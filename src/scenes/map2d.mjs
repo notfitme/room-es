@@ -51,10 +51,10 @@ const map2D = async ({ canvas }) => {
 		const { min, max, ncols, nrows, data } = file
 		const range = max - min
 		// make the canvas the same size as the data
-		ctx.canvas.width = ncols
-		ctx.canvas.height = nrows
+		// ctx.canvas.width = ncols
+		// ctx.canvas.height = nrows
 		// but display it double size so it's not too small
-		ctx.canvas.style.width = px(ncols * 2)
+		// ctx.canvas.style.width = px(ncols * 2)
 		// fill the canvas to dark gray
 		ctx.fillStyle = '#444'
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)

@@ -12,6 +12,19 @@ function resizeRendererToDisplaySize(renderer) {
 	return needResize
 }
 
+function resizeRendererToDisplaySize2d(canvas) {
+	const pixelRatio = window.devicePixelRatio
+	const width = (canvas.clientWidth * pixelRatio) | 0
+	const height = (canvas.clientHeight * pixelRatio) | 0
+	const needResize = canvas.width !== width || canvas.height !== height
+	if (needResize) {
+		canvas.setAttribute('width', width)
+		canvas.setAttribute('height', height)
+	}
+
+	return needResize
+}
+
 export const createRenderer = ({ container } = {}) => {
 	// 设置渲染器
 	const canvas = document.createElement('canvas')
@@ -72,8 +85,6 @@ export const createRenderer = ({ container } = {}) => {
 export const create2dRenderer = ({ container } = {}) => {
 
 	const canvas = document.createElement('canvas')
-	canvas.style.width = '100%'
-	canvas.style.height = '100%'
 	container.appendChild(canvas)
 	const ctx = canvas.getContext('2d')
 
@@ -88,6 +99,7 @@ export const create2dRenderer = ({ container } = {}) => {
 		timestamp *= 0.001
 
 		// 更新大小 TODO
+		resizeRendererToDisplaySize2d(canvas)
 
 		state.update(timestamp)
 		state.draw(ctx)
