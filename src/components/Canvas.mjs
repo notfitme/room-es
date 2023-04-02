@@ -15,7 +15,7 @@ const Pure2dCanvas = ({ showCreator }) => {
 	const canvasElement = createElement('div', { ref })
 	
 	useEffect(() => {
-		const renderer = createRenderer({ container: ref.current })
+		const renderer = create2dRenderer({ container: ref.current })
 		setRenderer(renderer)
 
 		return () => {
