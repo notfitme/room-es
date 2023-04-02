@@ -61,7 +61,6 @@ const map2D = async ({ canvas }) => {
 
 		ctx.fillStyle = '#444'
 		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-		// draw each data point
 		data.forEach((row, latNdx) => {
 			row.forEach((value, lonNdx) => {
 				if (value === undefined) {
@@ -82,11 +81,23 @@ const map2D = async ({ canvas }) => {
 		}
 	}
 
-	const update = () => {}
+	const update = () => {
+
+	}
+
+	const start = ({render}) => {
+		setTimeout(render, 0)
+	}
+
+	const end = () => {
+
+	}
 
 	return {
 		draw,
-		update
+		start,
+		update,
+		end
 	}
 	
 }

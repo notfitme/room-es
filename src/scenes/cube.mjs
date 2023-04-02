@@ -17,21 +17,26 @@ const cubeShow = ({ canvas }) => {
 	scene.add(light.obj)
 
 	// 摄像头
-	const camera = new THREE.PerspectiveCamera(
-		45,
-		canvas?.clientWidth / canvas?.clientHeight,
-		1,
-		500
-	)
+	const aspect = canvas?.clientWidth / canvas?.clientHeight
+	const camera = new THREE.PerspectiveCamera(45,aspect,1,500)
 	camera.position.set(0, 0, 50)
 	camera.lookAt(0, 0, 0)
 
-	const update = (timestamp) => {
+	const start = () => {
+
+	}
+
+	const end = () => {}
+
+	const update = ({timestamp, render}) => {
 		cube.route(timestamp)
+		render()
 	}
 
 	return {
 		scene,
+		start,
+		end,
 		camera,
 		update
 	}
