@@ -97,7 +97,6 @@ export const create2dRenderer = ({ container } = {}) => {
 	const animate = (timestamp) => {
 		timestamp *= 0.001
 
-		// 更新大小 TODO
 		resizeRendererToDisplaySize2d(canvas)
 
 		state.update(timestamp)

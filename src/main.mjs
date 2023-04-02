@@ -25,8 +25,8 @@ const shows = [
 ]
 
 const RenderMain = () => {
-	const [sceneOption, setScene] = useState({})
-	const { value: showCreator, key: optionId } = sceneOption
+	const [sceneOption, setScene] = useState()
+	const { value: showCreator, key: optionId } = sceneOption || {}
 
 	const canvasElement = showCreator ? createElement(Canvas, { showCreator }) : createElement('div', null, 'please choise a show!')
 
