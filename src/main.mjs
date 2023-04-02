@@ -4,6 +4,7 @@ import Select from './components/Select.mjs'
 import Canvas from './components/Canvas.mjs'
 import cubeShowCreator from './scenes/cube.mjs'
 import cube2ShowCreator from './scenes/cube2.mjs'
+import map2dShowCreator from './scenes/map2d.mjs'
 
 const shows = [
 	{
@@ -15,6 +16,11 @@ const shows = [
 		key: 'cube2',
 		label: 'cube2',
 		value: cube2ShowCreator
+	},
+	{
+		key: 'map2d',
+		label: 'map2d',
+		value: map2dShowCreator
 	}
 ]
 

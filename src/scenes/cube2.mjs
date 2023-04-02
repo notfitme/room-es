@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import cubeCreator from '../objs/cube.mjs'
 import lightCreator from '../objs/light.mjs'
 
-const cube2Show = ({container}) => {
+const cube2Show = ({canvas}) => {
 	const cube = cubeCreator()
 	const light = lightCreator()
 
@@ -16,7 +16,7 @@ const cube2Show = ({container}) => {
 	// 摄像头
 	const camera = new THREE.PerspectiveCamera(
 		50,
-		container?.clientWidth / container?.clientHeight,
+		canvas?.clientWidth / canvas?.clientHeight,
 		1,
 		50
 	)

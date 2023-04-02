@@ -14,12 +14,13 @@ function resizeRendererToDisplaySize(renderer) {
 
 export const createRenderer = ({ container } = {}) => {
 	// 设置渲染器
-	const renderer = new THREE.WebGLRenderer()
-	container.appendChild(renderer.domElement)
+	const canvas = document.createElement('canvas')
+	const renderer = new THREE.WebGLRenderer({ canvas })
+	container.appendChild(canvas)
 
 	const state = {
 		scene: null,
-		container,
+		canvas,
 		camera: null,
 		update: () => {},
 		running: true
@@ -44,8 +45,8 @@ export const createRenderer = ({ container } = {}) => {
 		}
 	}
 
-	const setShowCreator = (showCreator) => {
-		const { scene, camera, update = () => {} } = showCreator({container: state.container})
+	const setShowCreator = async (showCreator) => {
+		const { scene, camera, update = () => {} } = await showCreator({canvas: state.canvas})
 		state.scene = scene
 		state.camera = camera
 		state.update = update
@@ -67,4 +68,54 @@ export const createRenderer = ({ container } = {}) => {
 	}
 }
 
+
+export const create2dRenderer = ({ container } = {}) => {
+
+	const canvas = document.createElement('canvas')
+	canvas.style.width = '100%'
+	canvas.style.height = '100%'
+	container.appendChild(canvas)
+	const ctx = canvas.getContext('2d')
+
+	const state = {
+		draw: () => {},
+		update: () => {},
+		canvas,
+		running: true
+	}
+
+	const animate = (timestamp) => {
+		timestamp *= 0.001
+
+		// 更新大小 TODO
+
+		state.update(timestamp)
+		state.draw(ctx)
+
+		if (state.running) {
+			requestAnimationFrame(animate)
+		}
+	}
+
+	const setShowCreator = async (showCreator) => {
+		const { draw, update = () => {} } = await showCreator({canvas: state.canvas})
+		state.draw = draw
+		state.update = update
+	}
+
+	const stopRender = () => {
+		state.running = false
+	}
+
+	const startRender = () => {
+		state.running = true
+		animate()
+	}
+
+	return {
+		stopRender,
+		startRender,
+		setShowCreator
+	}
+}
 export const isBasicType = (obj) => !(typeof obj === 'object' || typeof obj === 'function')
