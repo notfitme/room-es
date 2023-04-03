@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 function resizeRendererToDisplaySize(renderer) {
 	const canvas = renderer.domElement
@@ -35,17 +34,14 @@ export const createRenderer = ({ container } = {}) => {
 	const state = {
 		scene: null,
 		canvas,
-		controls: null,
 		camera: null,
-		update: null,
 		start: () => {},
+		update: null,
 		end: () => {},
 		running: false
 	}
 
-	let renderRequested = false
 	const render = ({ updateControls } = {}) => {
-		renderRequested = false
 
 		// 更新大小
 		if (resizeRendererToDisplaySize(renderer)) {
@@ -54,18 +50,8 @@ export const createRenderer = ({ container } = {}) => {
 			state.camera.updateProjectionMatrix()
 		}
 
-		if(updateControls) {
-			state.controls.update()
-		}
 		renderer.render(state.scene, state.camera)
 
-	}
-
-	function requestRenderIfNotRequested() {
-		if (!renderRequested) {
-			renderRequested = true
-			requestAnimationFrame(() => render({ updateControls: true }))
-		}
 	}
 
 	const update = (timestamp) => {
@@ -81,7 +67,7 @@ export const createRenderer = ({ container } = {}) => {
 	}
 
 	const start = () => {
-		state.start({render})
+		state.start({render, controls: state.controls})
 	}
 
 	const end = () => {
@@ -89,30 +75,24 @@ export const createRenderer = ({ container } = {}) => {
 	}
 
 	const setShowCreator = async (showCreator) => {
-		const { scene, camera, update, start = () => {}, end = () =>{} } = await showCreator({canvas: state.canvas})
+		const { scene, camera, update, start = () => {}, end = () =>{} } 
+			= await showCreator({canvas: state.canvas, renderer: renderer, render})
 		state.scene = scene
 		state.camera = camera
 		state.update = update
 		state.start = start
 		state.end = end
-
-		state.controls = new OrbitControls(camera, canvas)
-		state.controls.enableDamping = true
 	}
 
 	const stopRender = () => {
-		state.running = false
-		state.controls.removeEventListener('change', requestRenderIfNotRequested);
-		window.removeEventListener('resize', requestRenderIfNotRequested);
 		end()
+		state.running = false
 	}
 
 	const startRender = () => {
 		state.running = true
 		start()
 		render()
-		state.controls.addEventListener('change', requestRenderIfNotRequested);
-		window.addEventListener('resize', requestRenderIfNotRequested);
 		update()
 	}
 

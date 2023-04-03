@@ -1,9 +1,10 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import lineCreator from '../objs/line.mjs'
 import cubeCreator from '../objs/cube.mjs'
 import lightCreator from '../objs/light.mjs'
 
-const cubeShow = ({ canvas }) => {
+const cubeShow = ({ canvas, render}) => {
 	const line = lineCreator()
 	const cube = cubeCreator()
 	const light = lightCreator()
@@ -22,23 +23,46 @@ const cubeShow = ({ canvas }) => {
 	camera.position.set(0, 0, 50)
 	camera.lookAt(0, 0, 0)
 
-	const start = () => {
+	// 摄像头控制器
+	const controls = new OrbitControls(camera, canvas)
+	controls.enableDamping = true
 
-	}
-
-	const end = () => {}
-
-	const update = ({timestamp, render}) => {
-		cube.route(timestamp)
+	let renderRequested = false
+	const sRender = () => {
+		renderRequested = false
 		render()
+		controls.update()
 	}
+
+	const requestRenderIfNotRequested = () => {
+		if (!renderRequested) {
+			renderRequested = true
+			requestAnimationFrame(() => sRender({ updateControls: true }))
+		}
+	}
+
+	const start = () => {
+		controls.addEventListener('change', requestRenderIfNotRequested);
+		window.addEventListener('resize', requestRenderIfNotRequested);
+	}
+
+	const update = ({ timestamp }) => {
+		cube.route(timestamp)
+		requestRenderIfNotRequested()
+	}
+
+	const end = () => {
+		controls.removeEventListener('change', requestRenderIfNotRequested);
+		window.removeEventListener('resize', requestRenderIfNotRequested);
+	}
+
 
 	return {
-		scene,
 		start,
+		update,
 		end,
-		camera,
-		update
+		scene,
+		camera
 	}
 }
 
