@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+export * from './map.mjs'
 
 function resizeRendererToDisplaySize(renderer) {
 	const canvas = renderer.domElement

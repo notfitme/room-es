@@ -5,6 +5,8 @@ import Canvas from './components/Canvas.mjs'
 import cubeShowCreator from './scenes/cube.mjs'
 import cube2ShowCreator from './scenes/cube2.mjs'
 import map2dShowCreator from './scenes/map2d.mjs'
+import earth1ShowCreator from './scenes/earth1.mjs'
+import earth2ShowCreator from './scenes/earth2.mjs'
 
 const shows = [
 	{
@@ -21,6 +23,16 @@ const shows = [
 		key: 'map2d',
 		label: 'map2d',
 		value: map2dShowCreator
+	},
+	{
+		key: 'earth1',
+		label: 'earth1',
+		value: earth1ShowCreator
+	},
+	{
+		key: 'earth2',
+		label: 'earth2',
+		value: earth2ShowCreator
 	}
 ]
 
