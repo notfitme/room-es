@@ -1,9 +1,68 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { parseData, loadFile } from '../utils/indes.mjs'
+import UiShowCreator from './ui.mjs'
+import { parseData, loadFile } from '../../utils/indes.mjs'
 
-function addBoxes(file, scene) {
+function mapValues(data, fn) {
+  return data.map((row, rowNdx) => {
+    return row.map((value, colNdx) => {
+      return fn(value, rowNdx, colNdx);
+    });
+  });
+}
+
+function makeDiffFile(baseFile, otherFile, compareFn) {
+  let min;
+  let max;
+  const baseData = baseFile.data;
+  const otherData = otherFile.data;
+  const data = mapValues(baseData, (base, rowNdx, colNdx) => {
+    const other = otherData[rowNdx][colNdx];
+      if (base === undefined || other === undefined) {
+        return undefined;
+      }
+      const value = compareFn(base, other);
+      min = Math.min(min === undefined ? value : min, value);
+      max = Math.max(max === undefined ? value : max, value);
+      return value;
+  });
+  // make a copy of baseFile and replace min, max, and data
+  // with the new data
+  return {...baseFile, min, max, data};
+}
+
+function amountGreaterThan(a, b) {
+  return Math.max(a - b, 0);
+}
+
+function generateFiles(fileInfos) {
+  const menInfo = fileInfos[0];
+  const womenInfo = fileInfos[1];
+  const menFile = menInfo.file;
+  const womenFile = womenInfo.file;
+
+  const files = []
+
+  files.push({
+    name: '>50%men',
+    hueRange: [0.6, 1.1],
+    file: makeDiffFile(menFile, womenFile, (men, women) => {
+      return amountGreaterThan(men, women);
+    }),
+  });
+  files.push({
+    name: '>50% women',
+    hueRange: [0.0, 0.4],
+    file: makeDiffFile(womenFile, menFile, (women, men) => {
+      return amountGreaterThan(women, men);
+    }),
+  });
+
+  return files
+}
+
+function addBoxes({file, hueRange}, scene) {
   const {min, max, data} = file;
   const range = max - min;
 
@@ -56,7 +115,7 @@ function addBoxes(file, scene) {
 
 
       // 计算颜色
-      const hue = THREE.MathUtils.lerp(0.7, 0.3, amount);
+      const hue = THREE.MathUtils.lerp(...hueRange, amount);
       const saturation = 1;
       const lightness = THREE.MathUtils.lerp(0.4, 1.0, amount);
       color.setHSL(hue, saturation, lightness);
@@ -86,15 +145,16 @@ function addBoxes(file, scene) {
   const material = new THREE.MeshBasicMaterial({vertexColors: true}); // 使用顶点颜色
   const mesh = new THREE.Mesh(mergedGeometry, material);
   scene.add(mesh);
+
+  return mesh;
 }
 
-const earth2Show = async ({canvas, render}) => {
+const earth3Show = async ({ canvas, render}) => {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('black');
 
   const camera = new THREE.PerspectiveCamera(60, 2, 0.1, 10);
   camera.position.z = 2.5;
-
 
   const loader = new THREE.TextureLoader();
   const texture = await loader.load('./lib/images/world.jpg')
@@ -106,9 +166,42 @@ const earth2Show = async ({canvas, render}) => {
 	const controls = new OrbitControls(camera, canvas)
 	controls.enableDamping = true
 
-  const ascUrl = './lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014mt_2010_cntm_1_deg.asc'
-  const file = await loadFile(ascUrl).then(parseData)
-  addBoxes(file,scene)
+  const fileInfos = [
+    {name: 'men',   hueRange: [0.7, 0.3], url: './lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014mt_2010_cntm_1_deg.asc' },
+    {name: 'women', hueRange: [0.9, 1.1], url: './lib/gpw_v4_basic_demographic_characteristics_rev10_a000_014ft_2010_cntm_1_deg.asc' },
+  ];
+
+  await Promise.all(fileInfos.map(async (fileInfo) => {
+    const text = await loadFile(fileInfo.url);
+    fileInfo.file = parseData(text);
+  }))
+
+  const othersFiles = generateFiles(fileInfos)
+  fileInfos.push(...othersFiles)
+
+  const { ReactComponent: ui, hooks } = UiShowCreator(fileInfos, fileInfos[0])
+
+  // show the selected data, hide the rest
+  const showFileInfo = (fileInfos, fileInfo) => {
+    fileInfos.forEach((info) => {
+      const visible = fileInfo === info;
+      info.root.visible = visible; // 通过这个控制是否显示
+      hooks.setCurrentFileInfo(fileInfo)
+    });
+    requestRenderIfNotRequested();
+  }
+
+  fileInfos.forEach((info) => {
+    const boxes = addBoxes({file: info.file, hueRange: info.hueRange}, scene);
+    info.root = boxes;
+    info.show = () =>{
+      showFileInfo(fileInfos, info);
+    }
+  });
+
+
+  // show the first set of data
+  // showFileInfo(fileInfos, fileInfos[0]);
 
 	let renderRequested = false
 	const sRender = () => {
@@ -138,15 +231,16 @@ const earth2Show = async ({canvas, render}) => {
 		window.removeEventListener('resize', requestRenderIfNotRequested);
 	}
 
+
   
   return {
 		scene,
 		start,
 		end,
 		camera,
-		// update
+    // update,
+    ui
 	}
 }
 
-
-export default earth2Show
+export default earth3Show

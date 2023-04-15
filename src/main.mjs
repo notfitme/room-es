@@ -7,6 +7,7 @@ import cube2ShowCreator from './scenes/cube2.mjs'
 import map2dShowCreator from './scenes/map2d.mjs'
 import earth1ShowCreator from './scenes/earth1.mjs'
 import earth2ShowCreator from './scenes/earth2.mjs'
+import earth3ShowCreator from './scenes/earth3/index.mjs'
 
 const shows = [
 	{
@@ -33,6 +34,11 @@ const shows = [
 		key: 'earth2',
 		label: 'earth2',
 		value: earth2ShowCreator
+	},
+	{
+		key: 'earth3',
+		label: 'earth3',
+		value: earth3ShowCreator
 	}
 ]
 
@@ -40,7 +46,7 @@ const RenderMain = () => {
 	const [sceneOption, setScene] = useState()
 	const { value: showCreator, key: optionId } = sceneOption || {}
 
-	const canvasElement = showCreator ? createElement(Canvas, { showCreator }) : createElement('div', null, 'please choise a show!')
+	const canvasElement = createElement(Canvas, { showCreator })
 
 	const selectElement = createElement(Select, {
 		options: shows,

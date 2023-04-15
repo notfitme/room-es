@@ -1,6 +1,8 @@
 import * as THREE from 'three'
 export * from './map.mjs'
 
+export const isBasicType = (obj) => !(typeof obj === 'object' || typeof obj === 'function')
+
 function resizeRendererToDisplaySize(renderer) {
 	const canvas = renderer.domElement
 	const pixelRatio = window.devicePixelRatio
@@ -26,11 +28,9 @@ function resizeRendererToDisplaySize2d(canvas) {
 	return needResize
 }
 
-export const createRenderer = ({ container } = {}) => {
+export const createRenderer = ({ canvas } = {}) => {
 	// 设置渲染器
-	const canvas = document.createElement('canvas')
 	const renderer = new THREE.WebGLRenderer({ canvas })
-	container.appendChild(canvas)
 
 	const state = {
 		scene: null,
@@ -39,6 +39,7 @@ export const createRenderer = ({ container } = {}) => {
 		start: () => {},
 		update: null,
 		end: () => {},
+		ui: null,
 		running: false
 	}
 
@@ -76,12 +77,13 @@ export const createRenderer = ({ container } = {}) => {
 	}
 
 	const setShowCreator = async (showCreator) => {
-		const { scene, camera, update, start = () => {}, end = () =>{} } 
-			= await showCreator({canvas: state.canvas, renderer: renderer, render})
+		const { scene, camera, update, start = () => {}, end = () =>{}, ui } 
+			= await showCreator({canvas: state.canvas, renderer: renderer, render })
 		state.scene = scene
 		state.camera = camera
 		state.update = update
 		state.start = start
+		state.ui = ui
 		state.end = end
 	}
 
@@ -98,17 +100,14 @@ export const createRenderer = ({ container } = {}) => {
 	}
 
 	return {
+		state,
 		stopRender,
 		startRender,
 		setShowCreator
 	}
 }
 
-
-export const create2dRenderer = ({ container } = {}) => {
-
-	const canvas = document.createElement('canvas')
-	container.appendChild(canvas)
+export const create2dRenderer = ({ canvas } = {}) => {
 
 	const state = {
 		draw: () => {},
@@ -117,6 +116,7 @@ export const create2dRenderer = ({ container } = {}) => {
 		camera: null,
 		start: () => {},
 		end: () => {},
+		ui: null,
 		running: false
 	}
 
@@ -146,10 +146,11 @@ export const create2dRenderer = ({ container } = {}) => {
 	}
 
 	const setShowCreator = async (showCreator) => {
-		const { draw, update, start = () => {}, end = () =>{} } = await showCreator({canvas: state.canvas})
+		const { draw, update, start = () => {}, end = () =>{}, ui } = await showCreator({canvas: state.canvas})
 		state.draw = draw
 		state.update = update
 		state.start = start
+		state.ui = ui
 		state.end = end
 	}
 
@@ -168,10 +169,9 @@ export const create2dRenderer = ({ container } = {}) => {
 	}
 
 	return {
+		state,
 		stopRender,
 		startRender,
 		setShowCreator
 	}
 }
-
-export const isBasicType = (obj) => !(typeof obj === 'object' || typeof obj === 'function')

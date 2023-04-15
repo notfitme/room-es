@@ -1,68 +1,64 @@
-import { createElement, useEffect, createRef, useState } from 'react'
+import { createElement, createRef, Component } from 'react'
 import { createRenderer, create2dRenderer } from '../utils/indes.mjs'
 
 const Canvas = ({ showCreator }) => {
 	if(!showCreator) {
-		return createElement('div', null, 'please choise a show!')
+		return createElement('div', null, '"showCreator" is empty!')
 	}
 
-	return showCreator.canvasType === '2d' ? createElement(Pure2dCanvas, { showCreator }) : createElement(PureCanvas, { showCreator })
+	const Canvas = showCreator.canvasType === '2d'  ? Canvas2D : Canvas3D
+
+	return createElement(Canvas, { showCreator})
 }
 
-const Pure2dCanvas = ({ showCreator }) => {
-	const [renderer, setRenderer] = useState()
-	const ref = createRef()
-	const canvasElement = createElement('div', { ref })
-	
-	useEffect(() => {
-		const renderer = create2dRenderer({ container: ref.current })
-		setRenderer(renderer)
+const Canvas2D = ({showCreator}) => createElement(CanvasRenderer, { showCreator, createRenderer: create2dRenderer })
 
-		return () => {
-			renderer.stopRender()
+const Canvas3D = ({ showCreator }) =>  createElement(CanvasRenderer, { showCreator, createRenderer })
+
+const LOADING = createElement('div', null, 'loading')
+
+class CanvasRenderer extends Component {
+	canvasRef = createRef()
+	canvas = createElement('canvas', { ref: this.canvasRef, id: 'canvas' })
+	renderer
+	state = {
+		ui: LOADING,
+	}
+
+	async renderShow() {
+		const renderer = this.renderer
+
+		this.setState({ ui: LOADING })
+		await renderer.setShowCreator(this.props.showCreator)
+		renderer.startRender()
+		this.setState({ui: createElement(renderer.state.ui || 'div')})
+
+	}
+
+	componentDidMount() {
+		this.renderer = this.props.createRenderer({ canvas: this.canvasRef.current })
+		this.renderShow()
+	}
+
+	// createRenderer改变时应该重新执行挂载新的canvas
+	componentDidUpdate(prevProps) {
+		if (this.props.createRenderer !== prevProps.createRenderer) {
+			this.componentWillUnmount()
+			throw new Error('"this.props.createRenderer" can not be changed，because one kind of "renderer" match one canvas dom')
 		}
-	}, [])
-	
 
-	useEffect(() => {
-		const render = async () => {
-			if (renderer && ref.current) {
-				await renderer.setShowCreator(showCreator)
-				renderer.startRender()
-			}
-		}
-		render()
-	})
+    if (this.props.showCreator !== prevProps.showCreator) {
+      this.renderShow()
+    }
+  }
 
-	return canvasElement
-}
+	componentWillUnmount() {
+		this.renderer.stopRender()
+	}
 
-const PureCanvas = ({ showCreator }) => {
-	const [renderer, setRenderer] = useState()
-	const ref = createRef()
-	const canvasElement = createElement('div', { ref })
-	
-	useEffect(() => {
-		const renderer = createRenderer({ container: ref.current })
-		setRenderer(renderer)
-
-		return () => {
-			renderer.stopRender()
-		}
-	}, [])
-	
-
-	useEffect(() => {
-		const render = async () => {
-			if (renderer && ref.current) {
-				await renderer.setShowCreator(showCreator)
-				renderer.startRender()
-			}
-		}
-		render()
-	})
-
-	return canvasElement
+	render() {
+    return createElement('div', { className: 'container'}, this.state.ui, this.canvas)
+  }
 }
 
 export default Canvas
