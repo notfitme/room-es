@@ -8,6 +8,7 @@ import map2dShowCreator from './scenes/map2d.mjs'
 import earth1ShowCreator from './scenes/earth1.mjs'
 import earth2ShowCreator from './scenes/earth2.mjs'
 import earth3ShowCreator from './scenes/earth3/index.mjs'
+import earth4ShowCreator from './scenes/earth4/index.mjs'
 
 const shows = [
 	{
@@ -39,6 +40,11 @@ const shows = [
 		key: 'earth3',
 		label: 'earth3',
 		value: earth3ShowCreator
+	},
+	{
+		key: 'earth4',
+		label: 'earth4',
+		value: earth4ShowCreator
 	}
 ]
 
